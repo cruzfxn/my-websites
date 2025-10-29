@@ -1,10 +1,10 @@
 <!doctype html>
-
 <html lang="en">  
 <head>  
   <meta charset="utf-8"/>  
   <meta name="viewport" content="width=device-width,initial-scale=1"/>  
-  <title>Divine Dynamic College — Result System</title>  
+  <title>Divine Dynamic College – Result System</title>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>  
     :root{  
       --page-width:210mm;  
@@ -15,436 +15,379 @@
       --text: #222;  
     }  
     body{ font-family: Inter, Roboto, Arial, Helvetica, sans-serif; background:#eef3fb; padding:20px; color:var(--text); }  
-    .app{ max-width:1100px; margin:0 auto; }  /* Input Panel */  
-#inputPanel {  
-  background: linear-gradient(180deg, #ffffff, #fbfcff);  
-  border-radius:12px;  
-  box-shadow:0 8px 24px rgba(11,94,204,0.08);  
-  padding:22px;  
-  margin-bottom:22px;  
-  border: 1px solid rgba(11,94,204,0.06);  
-}  
-.panel-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }  
-.brand-badge { width:56px; height:56px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,rgba(11,94,204,0.12),rgba(11,94,204,0.04)); border:1px solid rgba(11,94,204,0.08); box-shadow:0 6px 18px rgba(11,94,204,0.04); font-weight:800; color:var(--accent); }  
-#inputPanel h2 { font-size:18px; color:var(--accent); }  
+    .app{ max-width:1100px; margin:0 auto; }  
+    #inputPanel {  
+      background: linear-gradient(180deg, #ffffff, #fbfcff);  
+      border-radius:12px;  
+      box-shadow:0 8px 24px rgba(11,94,204,0.08);  
+      padding:22px;  
+      margin-bottom:22px;  
+      border: 1px solid rgba(11,94,204,0.06);  
+    }  
+    .panel-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }  
+    .brand-badge { width:56px; height:56px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,rgba(11,94,204,0.12),rgba(11,94,204,0.04)); border:1px solid rgba(11,94,204,0.08); box-shadow:0 6px 18px rgba(11,94,204,0.04); font-weight:800; color:var(--accent); }  
+    #inputPanel h2 { font-size:18px; color:var(--accent); }  
 
-.form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:10px; }  
-.form-row { display:flex; flex-direction:column; gap:6px; }  
-label { font-weight:600; font-size:13px; color:#223; }  
+    .form-grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-top:10px; }  
+    .form-row { display:flex; flex-direction:column; gap:6px; }  
+    label { font-weight:600; font-size:13px; color:#223; }  
 
-input[type=text], input[type=number], textarea, select {  
-  padding:10px; border-radius:8px; border:1px solid #dbe7ff; font-size:14px; background:#fff;  
-}  
-textarea { resize:vertical; min-height:64px; max-height:180px; }  
+    input[type=text], input[type=number], textarea, select {  
+      padding:10px; border-radius:8px; border:1px solid #dbe7ff; font-size:14px; background:#fff;  
+    }  
+    textarea { resize:vertical; min-height:64px; max-height:180px; }  
 
-.subjects-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; }  
-.subject-item label { font-weight:600; font-size:13px; color:#333; }  
-.subject-item input { width:100%; padding:8px; border-radius:8px; border:1px solid #e1e8ff; }  
+    .subjects-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:10px; }  
+    .subject-item label { font-weight:600; font-size:13px; color:#333; }  
+    .subject-item input { width:100%; padding:8px; border-radius:8px; border:1px solid #e1e8ff; }  
 
-.controls-row { display:flex; gap:10px; margin-top:16px; justify-content:center; flex-wrap:wrap; }  
-.btn { padding:10px 20px; border-radius:10px; border:none; cursor:pointer; font-weight:700; color:white; box-shadow:0 6px 18px rgba(11,94,204,0.08); }  
-.btn-primary { background:var(--accent); }  
-.btn-muted { background:#6c757d; box-shadow:none; }  
-.btn-print { background:#28a745; }  
-.small-note { text-align:center; color:#50607a; margin-top:10px; font-size:13px; }  
+    .controls-row { display:flex; gap:10px; margin-top:16px; justify-content:center; flex-wrap:wrap; }  
+    .btn { padding:10px 20px; border-radius:10px; border:none; cursor:pointer; font-weight:700; color:white; box-shadow:0 6px 18px rgba(11,94,204,0.08); }  
+    .btn-primary { background:var(--accent); }  
+    .btn-muted { background:#6c757d; box-shadow:none; }  
+    .btn-print { background:#28a745; }  
+    .btn-pdf { background:#dc3545; }  
+    .small-note { text-align:center; color:#50607a; margin-top:10px; font-size:13px; }  
 
-/* Printable sheet */  
-.sheet {  
-  width:var(--page-width);  
-  min-height:var(--page-height);  
-  margin:20px auto;  
-  background:#fff;  
-  padding:var(--pad);  
-  box-shadow:0 0 0.5cm rgba(0,0,0,0.08);  
-  box-sizing:border-box;  
-  position:relative; z-index:1;  
-}  
-.sheet::before {  
-  content:"";  
-  position:absolute; top:50%; left:50%;  
-  width:68%; height:68%;  
-  background: url("myschoollogo.jpg") center/contain no-repeat;  
-  opacity:0.06; transform:translate(-50%,-50%); z-index:0;  
-}  
-.sheet header{ display:flex; align-items:center; gap:12px; position:relative; z-index:2; }  
-.school-logo{ width:96px; height:96px; object-fit:contain; border-radius:8px; border:1px solid rgba(0,0,0,0.06); padding:8px; background:#fff; }  
-.letterhead{ flex:1; text-align:center; }  
-.letterhead h1{ font-size:26px; font-weight:800; text-transform:uppercase; color:var(--accent); }  
-.letterhead h3{ margin-top:6px; font-size:14px; font-weight:600; font-style:italic; color:#444; }  
-.letterhead p{ margin-top:6px; font-size:13px; color:#333; }  
+    .sheet {  
+      width:var(--page-width);  
+      min-height:var(--page-height);  
+      margin:20px auto;  
+      background:#fff;  
+      padding:var(--pad);  
+      box-shadow:0 0 0.5cm rgba(0,0,0,0.08);  
+      box-sizing:border-box;  
+      position:relative; z-index:1;  
+    }  
+    .sheet::before {  
+      content:"";  
+      position:absolute; top:50%; left:50%;  
+      width:68%; height:68%;  
+      background: url("myschoollogo.jpg") center/contain no-repeat;  
+      opacity:0.06; transform:translate(-50%,-50%); z-index:0;  
+    }  
+    .sheet header{ display:flex; align-items:center; gap:12px; position:relative; z-index:2; }  
+    .school-logo{ width:96px; height:96px; object-fit:contain; border-radius:8px; border:1px solid rgba(0,0,0,0.06); padding:8px; background:#fff; }  
+    .letterhead{ flex:1; text-align:center; }  
+    .letterhead h1{ font-size:26px; font-weight:800; text-transform:uppercase; color:var(--accent); }  
+    .letterhead h3{ margin-top:6px; font-size:14px; font-weight:600; font-style:italic; color:#444; }  
+    .letterhead p{ margin-top:6px; font-size:13px; color:#333; }  
 
-hr.break{ border:none; border-top:2px solid #222; margin:14px 0; position:relative; z-index:2; }  
+    hr.break{ border:none; border-top:2px solid #222; margin:14px 0; position:relative; z-index:2; }  
 
-.meta { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; z-index:2; position:relative; }  
-.meta .left { font-size:16px; font-weight:700; color:#000; }  
-#outName { font-size:18px; font-weight:800; text-transform:uppercase; color:#000; }  
-#outClass { font-size:16px; font-weight:700; color:#333; }  
+    .meta { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; z-index:2; position:relative; }  
+    .meta .left { font-size:16px; font-weight:700; color:#000; }  
+    #outName { font-size:18px; font-weight:800; text-transform:uppercase; color:#000; }  
+    #outClass { font-size:16px; font-weight:700; color:#333; }  
 
-table.result-table{ width:100%; border-collapse:collapse; margin-top:8px; position:relative; z-index:2; }  
-table.result-table th, table.result-table td{ border:1px solid #ccc; padding:8px; font-size:13px; vertical-align:middle; }  
-table.result-table th{ background:#f6f8ff; text-align:left; }  
+    table.result-table{ width:100%; border-collapse:collapse; margin-top:8px; position:relative; z-index:2; }  
+    table.result-table th, table.result-table td{ border:1px solid #ccc; padding:8px; font-size:13px; vertical-align:middle; }  
+    table.result-table th{ background:#f6f8ff; text-align:left; }  
 
-.totals{ margin-top:12px; display:flex; justify-content:flex-end; gap:24px; position:relative; z-index:2; }  
-.remarks{ margin-top:10px; position:relative; z-index:2; }  
-.remarks > div { min-height:32px; border:1px solid #ddd; padding:6px 8px; background:#fbfbfb; font-weight:600; font-size:13.5px; border-radius:6px; }  
+    .totals{ margin-top:12px; display:flex; justify-content:flex-end; gap:24px; position:relative; z-index:2; flex-wrap:wrap; }  
+    .remarks{ margin-top:10px; position:relative; z-index:2; }  
+    .remarks > div { min-height:32px; border:1px solid #ddd; padding:6px 8px; background:#fbfbfb; font-weight:600; font-size:13.5px; border-radius:6px; }  
 
-.sign-row { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-top:22px; position:relative; z-index:2; }  
-.sig-col { display:flex; flex-direction:column; align-items:flex-start; }  
-.sig-box { width:180px; height:68px; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:6px; }  
-.small { font-size:12px; }  
+    .sign-row { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-top:22px; position:relative; z-index:2; }  
+    .sig-col { display:flex; flex-direction:column; align-items:flex-start; }  
+    .sig-box { width:180px; height:68px; border:1px dashed #bbb; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:6px; }  
+    .small { font-size:12px; }  
 
-@page{ size:A4 portrait; margin:6mm; }  
-@media print {  
-  body{ background:white!important; margin:0; padding:0; }  
-  #inputPanel, .btn, .controls-row, .small-note { display:none!important; }  
-  .sheet { width:100%; max-width:210mm; padding:8mm!important; box-shadow:none; margin:0 auto!important; page-break-inside:avoid; }  
-  table, tr, td, th, .remarks, .sign-row { page-break-inside:avoid!important; }  
-}  
-/* === OPTIMIZE RESULT SHEET FOR A4 PRINT === */
-@media print {
-  /* Ensure standard A4 size */
-  @page {
-    size: A4 portrait;
-    margin: 10mm;
-  }
-
-  body {
-    background: white;
-    margin: 0;
-    padding: 0;
-    zoom: 70%; /* Light zoom-out for overall fit */
-  }
-
-  #resultSheet {
-    page-break-before: avoid;
-    page-break-after: avoid;
-    page-break-inside: avoid;
-    width: 90%;
-    max-width: 90%;
-    transform: scale(0.85); /* Slight shrink to fit A4 perfectly */
-    transform-origin: top center;
-    margin: 0 auto;
-  }
-
-  /* Reduce table font and padding for compact layout */
-  #resultSheet table {
-    width: 80%;
-    font-size: 12px;
-    border-collapse: collapse;
-  }
-
-  #resultSheet th, #resultSheet td {
-    padding: 4px 6px;
-  }
-
-  /* Hide unnecessary UI elements */
-  button, input, select {
-    display: none !important;
-  }
-
-  /* Optional: adjust header and footer spacing */
-  .letterhead {
-    margin-bottom: 6px;
-  }
-
-  .signatures {
-    margin-top: 8px;
-  }
-}
-}
+    @page{ size:A4 portrait; margin:6mm; }  
+    @media print {  
+      body{ background:white!important; margin:0; padding:0; zoom: 85%; }  
+      #inputPanel, .btn, .controls-row, .small-note { display:none!important; }  
+      .sheet { width:100%; max-width:210mm; padding:8mm!important; box-shadow:none; margin:0 auto!important; page-break-inside:avoid; }  
+      table, tr, td, th, .remarks, .sign-row { page-break-inside:avoid!important; }  
+    }  
   </style>  
 </head>  
 <body>  
   <div class="app">  
-    <h2 style="text-align:center; margin-bottom:10px; color:var(--accent);">Divine Dynamic College — Electronic Result System (Offline)</h2>  <!-- INPUT PANEL -->  
-<section id="inputPanel">  
-  <div class="panel-head">  
-    <div class="brand-badge">DDC</div>  
-    <div>  
-      <h2>🎓 Student Result Entry Panel</h2>  
-      <div style="font-size:13px; color:#445;">Every mark entered here tells a story of effort, growth, and learning.</div>  
-    </div>  
-  </div>  
-
-  <div class="form-grid">  
-    <div class="form-row">  
-      <label>Student Full Name</label>  
-      <input type="text" id="studentName" placeholder="e.g. Mercy Okunade">  
-    </div>  
-    <div class="form-row">  
-      <label>Class</label>  
-      <input type="text" id="studentClass" placeholder="e.g. JSS2">  
-    </div>  
-  </div>  
-
-  <div style="margin-top:12px;">  
-    <label>📘 Subject Scores (Max 40 each)</label>  
-    <div class="subjects-grid" style="margin-top:8px;">  
-      <div class="subject-item"><label>English Language</label><input type="number" id="eng" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Mathematics</label><input type="number" id="math" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Intermediate Science</label><input type="number" id="sci" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Christian Religion Studies</label><input type="number" id="crs" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Business Studies</label><input type="number" id="bus" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Social Studies</label><input type="number" id="soc" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Physical Health Education</label><input type="number" id="phe" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Digital Technology</label><input type="number" id="dt" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>Civic Education</label><input type="number" id="civic" min="0" max="40" placeholder="0"></div>  
-      <div class="subject-item"><label>History </label><input type="number" id="his" min="0" max="40" placeholder="0"></div>
-    </div>  
-  </div>  
-
-  <div style="margin-top:12px;">  
-    <label>Teacher's Comment / Remarks</label>  
-    <textarea id="teacherComment" placeholder="Type teacher's comment here..."></textarea>  
-  </div>  
-
-  <div style="margin-top:12px;">  
-    <label>Date (optional — leave blank to use today's date)</label>  
-    <input type="text" id="manualDate" placeholder="e.g. 18th October 2025">  
-  </div>  
-
-  <!-- NEW: Subject selector for class teacher signature (placed above buttons as requested) -->  
-  <div style="margin-top:12px;">  
-    <label>Select Subject (This will be used as the Class Teacher signature)</label>  
-    <select id="classSubjectSelect">  
-      <option value="">-- Select Subject --</option>  
-      <option value="eng">English Language</option>  
-      <option value="math">Mathematics</option>  
-      <option value="sci">Intermediate Science</option>  
-      <option value="crs">Christian Religion Studies</option>  
-      <option value="bus">Business Studies</option>  
-      <option value="soc">Social Studies</option>  
-      <option value="phe">Physical Health Education</option>  
-      <option value="dt">Digital Technology</option>  
-      <option value="civic">Civic Education</option>
-      <option value="civic">History </option>  
-    </select>  
-  </div>  
-
-  <div class="controls-row" style="margin-top:18px;">  
-            <button id="btnGenerate" class="btn btn-primary">Generate Result</button>
-    <button id="btnReset" class="btn btn-muted">Reset Inputs</button>  
-    <button id="btnPrint" class="btn btn-print">Print (A4)</button>  
-  </div>  
-
-  <p class="small-note">Note: put your image files ( <code>myschoollogo.jpg</code>, <code>principal_sig.png</code>, <code>class_teacher_sig.png</code>, <code>signatures/*.png</code> ) in the same folder.</p>  
-</section>  
-
-<!-- PRINTABLE SHEET -->  
-<section class="sheet" id="printSheet" aria-label="Printable result sheet preview">  
-  <header>  
-    <img id="schoolLogoImg" class="school-logo" src="myschoollogo.jpg" alt="School Logo">  
-    <div class="letterhead">  
-  <h1 id="schoolName"><strong>Divine Dynamic College</strong></h1>  
-  <h3 id="schoolMotto"><em>(Learning for Dynamic Service)</em></h3>  
-  <p id="schoolAddress"><strong>2, Shobowale Close, Karaole Estate off College Road, Ifako Ijaye, Lagos State, Nigeria</strong></p>
-  <p id="academicSession"><strong>2025 / 2026 Academic Session — First Term Mid Examination</strong></p>
-  <hr>
-    </div>  
-  </header>  
-
-  <hr class="break">  
-  <div class="meta">  
-    <div class="left">  
-      <strong>Student:</strong> <span id="outName">-</span><br>  
-      <strong>Class:</strong> <span id="outClass">-</span>  
-    </div>  
-    <div class="right">  
-      <div><strong>Date:</strong> <span id="outDate">-</span></div>  
-      <div style="margin-top:6px;"><strong>Total obtainable:</strong> <span id="outTotalObtainable">-</span></div>  
-    </div>  
-  </div>  
-
-  <table class="result-table" id="resultTable">  
-    <thead>  
-      <tr><th>Subject</th><th>Score ( /40 )</th><th>Subject Teacher Signature</th></tr>  
-    </thead>  
-    <tbody id="resultBody"></tbody>  
-  </table>  
-
-  <div class="totals">  
-    <div><strong>Total Obtained:</strong> <span id="outTotal">0</span> / <span id="outMax">0</span></div>  
-    <div><strong>Average:</strong> <span id="outAverage">0</span></div>
-    <div><strong>Grade:</strong> <span id="outAverage">0</span></div>  
-    <div><strong>Percentage:</strong> <span id="outPercent">0%</span></div>  
-  </div>  
-
-  <div class="remarks" style="margin-top:12px;">  
-    <div><strong>Teacher's Comment:</strong></div>  
-    <div id="outComment">-</div>  
-
-    <div style="margin-top:12px;"><strong>Principal's Remark:</strong></div>  
-    <div id="outPrincipalRemark">-</div>  
-  </div>  
-
-  <div class="sign-row">  
-    <div class="sig-col">  
-      <div class="small" style="font-weight:700;">Class Teacher's Signature</div>  
-      <div class="sig-box" id="classTeacherSigBox">  
-        <!-- default class teacher signature; replaced when a subject is selected -->  
-        <img id="teacherSigPreview" src="class_teacher_sig.png" alt="Class Teacher Signature" style="max-width:100%; max-height:100%; object-fit:contain;">  
+    <h2 style="text-align:center; margin-bottom:10px; color:var(--accent);">Divine Dynamic College – Electronic Result System (Offline)</h2>  
+    
+    <section id="inputPanel">  
+      <div class="panel-head">  
+        <div class="brand-badge">DDC</div>  
+        <div>  
+          <h2>🎓 Student Result Entry Panel</h2>  
+          <div style="font-size:13px; color:#445;">Every mark entered here tells a story of effort, growth, and learning.</div>  
+        </div>  
       </div>  
-      <div style="font-size:13px; font-weight:700; margin-top:6px; color:#000;">  
-        Date: <span id="sigDate"></span>  
+
+      <div class="form-grid">  
+        <div class="form-row">  
+          <label>Student Full Name</label>  
+          <input type="text" id="studentName" placeholder="e.g. Mercy Okunade">  
+        </div>  
+        <div class="form-row">  
+          <label>Class</label>  
+          <input type="text" id="studentClass" placeholder="e.g. JSS2">  
+        </div>  
       </div>  
-    </div>  
 
-    <div class="sig-col" style="align-items:flex-end;">  
-      <div class="small" style="font-weight:700;">Principal's Signature</div>  
-      <div class="sig-box">  
-        <img id="principalSig" src="principal_sig.png" alt="Principal Signature" style="max-width:100%; max-height:100%; object-fit:contain;">  
+      <div style="margin-top:12px;">  
+        <label>📘 Subject Scores (Max 40 each)</label>  
+        <div class="subjects-grid" style="margin-top:8px;">  
+          <div class="subject-item"><label>English Language</label><input type="number" id="eng" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Mathematics</label><input type="number" id="math" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Intermediate Science</label><input type="number" id="sci" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Christian Religion Studies</label><input type="number" id="crs" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Business Studies</label><input type="number" id="bus" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Social Studies</label><input type="number" id="soc" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Physical Health Education</label><input type="number" id="phe" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Digital Technology</label><input type="number" id="dt" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>Civic Education</label><input type="number" id="civic" min="0" max="40" placeholder="0"></div>  
+          <div class="subject-item"><label>History</label><input type="number" id="his" min="0" max="40" placeholder="0"></div>
+        </div>  
       </div>  
-      <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">  
-        <div class="small" style="font-weight:700;">Date:</div>  
-        <div id="principalDate" style="font-size:13px; font-weight:700; color:#000;"></div>  
+
+      <div style="margin-top:12px;">  
+        <label>Teacher's Comment / Remarks</label>  
+        <textarea id="teacherComment" placeholder="Type teacher's comment here..."></textarea>  
       </div>  
-    </div>  
-  </div>  
-</section>  
-<!-- END SHEET -->
-<script>
-const subjects = [
-  { name: 'English Language', id: 'eng' },
-  { name: 'Mathematics', id: 'math' },
-  { name: 'Intermediate Science', id: 'sci' },
-  { name: 'Christian Religion Studies', id: 'crs' },
-  { name: 'Business Studies', id: 'bus' },
-  { name: 'Social Studies', id: 'soc' },
-  { name: 'Physical Health Education', id: 'phe' },
-  { name: 'Digital Technology', id: 'dt' },
-  { name: 'History ', id: 'his' },
-  { name: 'Civic Education', id: 'civic' }
-];
-const maxPerSubject = 40;
-// Function to get each subject's teacher signature path
-function subjectSignaturePathById(id) {
-  return `signatures/${id}.png`;  // example: signatures/eng.png
-}
 
+      <div style="margin-top:12px;">  
+        <label>Date (optional – leave blank to use today's date)</label>  
+        <input type="text" id="manualDate" placeholder="e.g. 18th October 2025">  
+      </div>  
 
-// Build table rows
-const resultBody = document.getElementById('resultBody');
-subjects.forEach((s, idx) => {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${s.name}</td>
-    <td id="out_${s.id}">-</td>
-    <td style="text-align:center">
-      <img id="outimg_${idx}" class="subject-sign" src="${subjectSignaturePathById(s.id)}" style="max-height:40px">
-    </td>`;
-  resultBody.appendChild(tr);
-});
+      <div style="margin-top:12px;">  
+        <label>Select Subject (This will be used as the Class Teacher signature)</label>  
+        <select id="classSubjectSelect">  
+          <option value="">-- Select Subject --</option>  
+          <option value="eng">English Language</option>  
+          <option value="math">Mathematics</option>  
+          <option value="sci">Intermediate Science</option>  
+          <option value="crs">Christian Religion Studies</option>  
+          <option value="bus">Business Studies</option>  
+          <option value="soc">Social Studies</option>  
+          <option value="phe">Physical Health Education</option>  
+          <option value="dt">Digital Technology</option>  
+          <option value="civic">Civic Education</option>
+          <option value="his">History</option>  
+        </select>  
+      </div>  
 
-// Totals setup
-const maxTotal = subjects.length * maxPerSubject;
-document.getElementById('outTotalObtainable').textContent = maxTotal;
-document.getElementById('outMax').textContent = maxTotal;
+      <div class="controls-row" style="margin-top:18px;">  
+        <button id="btnGenerate" class="btn btn-primary">Generate Result</button>
+        <button id="btnReset" class="btn btn-muted">Reset Inputs</button>  
+        <button id="btnPrint" class="btn btn-print">Print (A4)</button>
+        <button id="btnPDF" class="btn btn-pdf">Download PDF</button>  
+      </div>  
 
-// Buttons
-document.getElementById('btnGenerate').addEventListener('click', generateResult);
-document.getElementById('btnReset').addEventListener('click', resetInputs);
-document.getElementById('btnPrint').addEventListener('click', () => window.print());
+      <p class="small-note">Note: put your image files (<code>myschoollogo.jpg</code>, <code>principal_sig.png</code>, <code>class_teacher_sig.png</code>, <code>signatures/*.png</code>) in the same folder.</p>  
+    </section>  
 
-function resetInputs() {
-  document.querySelectorAll('input[type=text], input[type=number], textarea').forEach(i => i.value = '');
-  document.getElementById('classSubjectSelect').value = '';
-  document.getElementById('teacherSigPreview').src = 'class_teacher_sig.png';
-  alert('Inputs cleared.');
-}
+    <section class="sheet" id="printSheet" aria-label="Printable result sheet preview">  
+      <header>  
+        <img id="schoolLogoImg" class="school-logo" src="myschoollogo.jpg" alt="School Logo">  
+        <div class="letterhead">  
+          <h1 id="schoolName"><strong>Divine Dynamic College</strong></h1>  
+          <h3 id="schoolMotto"><em>(Learning for Dynamic Service)</em></h3>  
+          <p id="schoolAddress"><strong>2, Shobowale Close, Karaole Estate off College Road, Ifako Ijaye, Lagos State, Nigeria</strong></p>
+          <p id="academicSession"><strong>2025 / 2026 Academic Session – First Term Mid Examination</strong></p>
+          <hr>
+        </div>  
+      </header>  
 
-// Grade function
-function getGrade(percent) {
-  if (percent >= 70) return 'A';
-  if (percent >= 60) return 'B';
-  if (percent >= 50) return 'C';
-  if (percent >= 45) return 'D';
-  if (percent >= 40) return 'E';
-  return 'F';
-}
-function generateResult() {
-  const element = document.getElementById('resultSheet'); // your result section
+      <hr class="break">  
+      <div class="meta">  
+        <div class="left">  
+          <strong>Student:</strong> <span id="outName">-</span><br>  
+          <strong>Class:</strong> <span id="outClass">-</span>  
+        </div>  
+        <div class="right">  
+          <div><strong>Date:</strong> <span id="outDate">-</span></div>  
+          <div style="margin-top:6px;"><strong>Total obtainable:</strong> <span id="outTotalObtainable">-</span></div>  
+        </div>  
+      </div>  
 
-  const studentName = document.getElementById('studentName').value || 'Student';
-  
-  const options = {
-    margin: 10,
-    filename: `${studentName}_Result.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
+      <table class="result-table" id="resultTable">  
+        <thead>  
+          <tr><th>Subject</th><th>Score ( /40 )</th><th>Subject Teacher Signature</th></tr>  
+        </thead>  
+        <tbody id="resultBody"></tbody>  
+      </table>  
 
-  html2pdf().from(element).set(options).save();
-  if (!name || !cls) return alert('Please enter student name and class.');
+      <div class="totals">  
+        <div><strong>Total Obtained:</strong> <span id="outTotal">0</span> / <span id="outMax">0</span></div>  
+        <div><strong>Average:</strong> <span id="outAverage">0</span></div>
+        <div><strong>Grade:</strong> <span id="outGrade">-</span></div>  
+        <div><strong>Percentage:</strong> <span id="outPercent">0%</span></div>  
+      </div>  
 
-  const manualDate = document.getElementById('manualDate').value.trim();
-  const dateStr = manualDate || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+      <div class="remarks" style="margin-top:12px;">  
+        <div><strong>Teacher's Comment:</strong></div>  
+        <div id="outComment">-</div>  
 
-  // Fill meta
-  document.getElementById('outName').textContent = name;
-  document.getElementById('outClass').textContent = cls;
-  document.getElementById('outDate').textContent = dateStr;
-  document.getElementById('sigDate').textContent = dateStr;
-  document.getElementById('principalDate').textContent = dateStr;
+        <div style="margin-top:12px;"><strong>Principal's Remark:</strong></div>  
+        <div id="outPrincipalRemark">-</div>  
+      </div>  
 
-  // Score calc
-  let total = 0;
-  subjects.forEach(s => {
-    const inp = document.getElementById(s.id);
-    let val = inp && inp.value ? Number(inp.value) : 0;
-    val = Math.min(Math.max(val, 0), maxPerSubject);
-    total += val;
-    document.getElementById('out_' + s.id).textContent = val;
-  });
+      <div class="sign-row">  
+        <div class="sig-col">  
+          <div class="small" style="font-weight:700;">Class Teacher's Signature</div>  
+          <div class="sig-box" id="classTeacherSigBox">  
+            <img id="teacherSigPreview" src="class_teacher_sig.png" alt="Class Teacher Signature" style="max-width:100%; max-height:100%; object-fit:contain;">  
+          </div>  
+          <div style="font-size:13px; font-weight:700; margin-top:6px; color:#000;">  
+            Date: <span id="sigDate"></span>  
+          </div>  
+        </div>  
 
-  const average = (total / subjects.length).toFixed(2);
-  const percent = (total / maxTotal) * 100;
-  const grade = getGrade(percent);
+        <div class="sig-col" style="align-items:flex-end;">  
+          <div class="small" style="font-weight:700;">Principal's Signature</div>  
+          <div class="sig-box">  
+            <img id="principalSig" src="principal_sig.png" alt="Principal Signature" style="max-width:100%; max-height:100%; object-fit:contain;">  
+          </div>  
+          <div style="display:flex; align-items:center; gap:10px; margin-top:6px;">  
+            <div class="small" style="font-weight:700;">Date:</div>  
+            <div id="principalDate" style="font-size:13px; font-weight:700; color:#000;"></div>  
+          </div>  
+        </div>  
+      </div>  
+    </section>  
+  </div>
 
-  // Output totals
-  document.getElementById('outTotal').textContent = total;
-  document.getElementById('outAverage').textContent = average;
-  document.getElementById('outPercent').textContent = percent.toFixed(2) + '%';
+  <script>
+    const subjects = [
+      { name: 'English Language', id: 'eng' },
+      { name: 'Mathematics', id: 'math' },
+      { name: 'Intermediate Science', id: 'sci' },
+      { name: 'Christian Religion Studies', id: 'crs' },
+      { name: 'Business Studies', id: 'bus' },
+      { name: 'Social Studies', id: 'soc' },
+      { name: 'Physical Health Education', id: 'phe' },
+      { name: 'Digital Technology', id: 'dt' },
+      { name: 'History', id: 'his' },
+      { name: 'Civic Education', id: 'civic' }
+    ];
+    const maxPerSubject = 40;
 
-  // Add grade output
-  let gradeElem = document.getElementById('outGrade');
-  if (!gradeElem) {
-    const gradeDiv = document.createElement('div');
-    gradeDiv.innerHTML = `<strong>Grade:</strong> <span id="outGrade">${grade}</span>`;
-    document.querySelector('.totals').appendChild(gradeDiv);
-  } else {
-    gradeElem.textContent = grade;
-  }
+    function subjectSignaturePathById(id) {
+      return `signatures/${id}.png`;
+    }
 
-  // Comments & remarks
-  const comment = document.getElementById('teacherComment').value.trim();
-  document.getElementById('outComment').textContent = comment || '-';
+    // Build table rows
+    const resultBody = document.getElementById('resultBody');
+    subjects.forEach((s, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${s.name}</td>
+        <td id="out_${s.id}">-</td>
+        <td style="text-align:center">
+          <img id="outimg_${idx}" class="subject-sign" src="${subjectSignaturePathById(s.id)}" style="max-height:40px" onerror="this.style.display='none'">
+        </td>`;
+      resultBody.appendChild(tr);
+    });
 
-  let remark = '';
-  if (percent >= 70) remark = 'An outstanding result, keep it up.';
-  else if (percent >= 60) remark = 'A good performance, there’s still room for improvement.';
-  else if (percent >= 50) remark = 'Fair attempt, but you need to put in more effort.';
-  else remark = 'This result is below expectation. You must sit up.';
-  document.getElementById('outPrincipalRemark').textContent = remark;
+    // Totals setup
+    const maxTotal = subjects.length * maxPerSubject;
+    document.getElementById('outTotalObtainable').textContent = maxTotal;
+    document.getElementById('outMax').textContent = maxTotal;
 
-  // Class teacher signature logic
-  const selectedSub = document.getElementById('classSubjectSelect').value;
-  document.getElementById('teacherSigPreview').src = selectedSub
-    ? subjectSignaturePathById(selectedSub)
-    : 'class_teacher_sig.png';
+    // Buttons
+    document.getElementById('btnGenerate').addEventListener('click', generateResult);
+    document.getElementById('btnReset').addEventListener('click', resetInputs);
+    document.getElementById('btnPrint').addEventListener('click', () => window.print());
+    document.getElementById('btnPDF').addEventListener('click', downloadPDF);
 
-  document.getElementById('printSheet').scrollIntoView({ behavior: 'smooth' });
-  setTimeout(() => savePrintableHTML(name, cls), 300);
-}
-function printResult() {
-  const printContent = document.getElementById('resultSheet').innerHTML;
-  const originalContent = document.body.innerHTML;
-  document.body.innerHTML = printContent;
-  window.print();
-  document.body.innerHTML = originalContent;
-}
-</script><script src="script.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    function resetInputs() {
+      document.querySelectorAll('input[type=text], input[type=number], textarea').forEach(i => i.value = '');
+      document.getElementById('classSubjectSelect').value = '';
+      document.getElementById('teacherSigPreview').src = 'class_teacher_sig.png';
+      alert('Inputs cleared.');
+    }
+
+    function getGrade(percent) {
+      if (percent >= 70) return 'A';
+      if (percent >= 60) return 'B';
+      if (percent >= 50) return 'C';
+      if (percent >= 45) return 'D';
+      if (percent >= 40) return 'E';
+      return 'F';
+    }
+
+    function generateResult() {
+      const name = document.getElementById('studentName').value.trim();
+      const cls = document.getElementById('studentClass').value.trim();
+      
+      if (!name || !cls) {
+        alert('Please enter student name and class.');
+        return;
+      }
+
+      const manualDate = document.getElementById('manualDate').value.trim();
+      const dateStr = manualDate || new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      // Fill meta
+      document.getElementById('outName').textContent = name;
+      document.getElementById('outClass').textContent = cls;
+      document.getElementById('outDate').textContent = dateStr;
+      document.getElementById('sigDate').textContent = dateStr;
+      document.getElementById('principalDate').textContent = dateStr;
+
+      // Score calc
+      let total = 0;
+      subjects.forEach(s => {
+        const inp = document.getElementById(s.id);
+        let val = inp && inp.value ? Number(inp.value) : 0;
+        val = Math.min(Math.max(val, 0), maxPerSubject);
+        total += val;
+        document.getElementById('out_' + s.id).textContent = val;
+      });
+
+      const average = (total / subjects.length).toFixed(2);
+      const percent = (total / maxTotal) * 100;
+      const grade = getGrade(percent);
+
+      // Output totals
+      document.getElementById('outTotal').textContent = total;
+      document.getElementById('outAverage').textContent = average;
+      document.getElementById('outPercent').textContent = percent.toFixed(2) + '%';
+      document.getElementById('outGrade').textContent = grade;
+
+      // Comments & remarks
+      const comment = document.getElementById('teacherComment').value.trim();
+      document.getElementById('outComment').textContent = comment || '-';
+
+      let remark = '';
+      if (percent >= 70) remark = 'An outstanding result, keep it up.';
+      else if (percent >= 60) remark = 'A good performance, there\'s still room for improvement.';
+      else if (percent >= 50) remark = 'Fair attempt, but you need to put in more effort.';
+      else remark = 'This result is below expectation. You must sit up.';
+      document.getElementById('outPrincipalRemark').textContent = remark;
+
+      // Class teacher signature logic
+      const selectedSub = document.getElementById('classSubjectSelect').value;
+      document.getElementById('teacherSigPreview').src = selectedSub
+        ? subjectSignaturePathById(selectedSub)
+        : 'class_teacher_sig.png';
+
+      document.getElementById('printSheet').scrollIntoView({ behavior: 'smooth' });
+      alert('Result generated successfully! You can now print or download as PDF.');
+    }
+
+    function downloadPDF() {
+      const name = document.getElementById('outName').textContent;
+      
+      if (name === '-') {
+        alert('Please generate a result first before downloading PDF.');
+        return;
+      }
+
+      const element = document.getElementById('printSheet');
+      const opt = {
+        margin: 10,
+        filename: `${name}_Result.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
 </body>
 </html>
-  </div>   
